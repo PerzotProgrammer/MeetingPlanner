@@ -1,0 +1,31 @@
+package com.github.perzotprogrammer.meetingplanner.core.navigation.graph
+
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import com.github.perzotprogrammer.meetingplanner.auth.presentation.AuthViewModel
+import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.LoginScreen
+import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.WelcomeScreen
+import com.github.perzotprogrammer.meetingplanner.core.navigation.model.Navigation
+import com.github.perzotprogrammer.meetingplanner.core.navigation.model.Screen
+
+fun NavGraphBuilder.authGraph(navHostController: NavHostController, authViewModel: AuthViewModel) {
+    navigation<Navigation.Auth>(startDestination = Screen.Welcome) {
+        composable<Screen.Welcome> {
+            WelcomeScreen(navHostController, authViewModel)
+        }
+        composable<Screen.Login> {
+            LoginScreen(navHostController, authViewModel)
+        }
+        composable<Screen.Register> {
+        }
+    }
+}
+
+fun NavGraphBuilder.mainGraph(navHostController: NavHostController) {
+    navigation<Navigation.Main>(startDestination = Screen.Home) {
+        composable<Screen.Home> {
+        }
+    }
+}
