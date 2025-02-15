@@ -3,9 +3,10 @@ package com.github.perzotprogrammer.meetingplanner.core.navigation.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Navigation {
+sealed class NavigationTree {
     @Serializable
-    data object Auth : Navigation()
+    data object Auth : NavigationTree()
+    
     @Serializable
-    data object Main : Navigation()
+    data object Main : NavigationTree()
 }

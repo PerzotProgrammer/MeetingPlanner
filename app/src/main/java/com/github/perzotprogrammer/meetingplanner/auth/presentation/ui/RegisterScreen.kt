@@ -24,11 +24,11 @@ import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.common.Em
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.common.PasswordField
 
 @Composable
-fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewModel) {
-
+fun RegisterScreen(navHostController: NavHostController, authViewModel: AuthViewModel) {
     val authDataStore = authViewModel.authDataState.collectAsStateWithLifecycle().value
     val emailTextField = authDataStore.emailField
     val passwordTextField = authDataStore.passwordField
+    val repeatPasswordTextField = authDataStore.repeatPasswordField
     val isPasswordVisible = authDataStore.isPasswordVisible
 
 
@@ -42,7 +42,7 @@ fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewMod
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Enter your credentials for login",
+                text = "Enter your credentials for registration",
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center
@@ -55,8 +55,13 @@ fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewMod
             PasswordField(
                 passwordTextField = passwordTextField,
                 isPasswordVisible = isPasswordVisible,
-                label = "Password",
-                iconVisibility = true,
+                label = "Password"
+            )
+            PasswordField(
+                passwordTextField = repeatPasswordTextField,
+                isPasswordVisible = isPasswordVisible,
+                label = "Repeat password",
+                iconVisibility = false
             )
             Spacer(modifier = AuthModifiers.spacer())
             val context = LocalContext.current
@@ -65,13 +70,13 @@ fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewMod
                 onClick = {
                     Toast.makeText(
                         context,
-                        "${emailTextField.value} ${passwordTextField.value}",
+                        "${emailTextField.value} ${passwordTextField.value} ${repeatPasswordTextField.value}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             ) {
                 Text(
-                    text = "Log in",
+                    text = "Register",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
@@ -80,7 +85,8 @@ fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewMod
                 modifier = AuthModifiers.button(),
                 onClick = {
                     navHostController.navigateUp()
-                }) {
+                }
+            ) {
                 Text(
                     text = "Go back",
                     modifier = Modifier.fillMaxWidth(),
