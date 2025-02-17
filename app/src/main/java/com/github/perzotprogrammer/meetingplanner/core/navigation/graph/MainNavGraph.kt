@@ -8,11 +8,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.AuthViewModel
 import com.github.perzotprogrammer.meetingplanner.core.navigation.model.NavigationTree
+import com.github.perzotprogrammer.meetingplanner.main.presentation.MainViewModel
 
 @Composable
 fun MainNavGraph() {
     val navHostController = rememberNavController()
     val authViewModel = hiltViewModel<AuthViewModel>()
+    val mainViewModel = hiltViewModel<MainViewModel>()
     val animationDuration = 1000
     NavHost(navHostController, startDestination = NavigationTree.Auth,
         enterTransition = {
@@ -41,7 +43,7 @@ fun MainNavGraph() {
         }
     ) {
         authGraph(navHostController, authViewModel)
-        mainGraph(navHostController)
+        mainGraph(navHostController, mainViewModel)
     }
 }
 

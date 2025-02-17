@@ -17,11 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.AuthViewModel
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.common.AuthModifiers
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.common.EmailField
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.common.PasswordField
+import com.github.perzotprogrammer.meetingplanner.core.navigation.model.NavigationTree
+import com.github.perzotprogrammer.meetingplanner.core.presentation.model.DataResult
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewModel) {
@@ -63,11 +67,30 @@ fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewMod
             Button(
                 modifier = AuthModifiers.button(),
                 onClick = {
-                    Toast.makeText(
-                        context,
-                        "${emailTextField.value} ${passwordTextField.value}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    authViewModel.viewModelScope.launch {
+                        when (authViewModel.signInWithEmailAndPassword(
+                            emailTextField.value,
+                            passwordTextField.value
+                        )) {
+                            DataResult.Error -> {
+                                Toast.makeText(context, "Sign in failed.", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            DataResult.Success -> {
+                                Toast.makeText(context, "Sign in successful!", Toast.LENGTH_SHORT)
+                                    .show()
+                                navHostController.navigate(NavigationTree.Main) {
+                                    popUpTo(NavigationTree.Auth) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+
+                            DataResult.Loading -> {}
+                        }
+                    }
+
                 }
             ) {
                 Text(

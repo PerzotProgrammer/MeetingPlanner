@@ -17,11 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.AuthViewModel
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.common.AuthModifiers
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.common.EmailField
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.common.PasswordField
+import com.github.perzotprogrammer.meetingplanner.core.presentation.model.DataResult
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(navHostController: NavHostController, authViewModel: AuthViewModel) {
@@ -68,11 +71,25 @@ fun RegisterScreen(navHostController: NavHostController, authViewModel: AuthView
             Button(
                 modifier = AuthModifiers.button(),
                 onClick = {
-                    Toast.makeText(
-                        context,
-                        "${emailTextField.value} ${passwordTextField.value} ${repeatPasswordTextField.value}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    authViewModel.viewModelScope.launch {
+                        when (authViewModel.createUserWithEmailAndPassword(
+                            emailTextField.value,
+                            passwordTextField.value
+                        )) {
+                            DataResult.Error -> {
+                                Toast.makeText(context, "User creation failed.", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            DataResult.Success -> {
+                                Toast.makeText(context, "User created!", Toast.LENGTH_SHORT).show()
+                                navHostController.navigateUp()
+                            }
+
+                            DataResult.Loading -> {}
+                        }
+                    }
+
                 }
             ) {
                 Text(

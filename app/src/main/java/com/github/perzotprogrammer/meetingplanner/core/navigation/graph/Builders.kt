@@ -10,6 +10,8 @@ import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.RegisterS
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.ui.WelcomeScreen
 import com.github.perzotprogrammer.meetingplanner.core.navigation.model.NavigationTree
 import com.github.perzotprogrammer.meetingplanner.core.navigation.model.Screen
+import com.github.perzotprogrammer.meetingplanner.main.presentation.ui.HomeScreen
+import com.github.perzotprogrammer.meetingplanner.main.presentation.MainViewModel
 
 fun NavGraphBuilder.authGraph(navHostController: NavHostController, authViewModel: AuthViewModel) {
     navigation<NavigationTree.Auth>(startDestination = Screen.Welcome) {
@@ -25,9 +27,10 @@ fun NavGraphBuilder.authGraph(navHostController: NavHostController, authViewMode
     }
 }
 
-fun NavGraphBuilder.mainGraph(navHostController: NavHostController) {
+fun NavGraphBuilder.mainGraph(navHostController: NavHostController, mainViewModel: MainViewModel) {
     navigation<NavigationTree.Main>(startDestination = Screen.Home) {
         composable<Screen.Home> {
+            HomeScreen(navHostController, mainViewModel)
         }
     }
 }
