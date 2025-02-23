@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -27,7 +28,9 @@ import com.github.perzotprogrammer.meetingplanner.core.presentation.model.DataRe
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen(navHostController: NavHostController, authViewModel: AuthViewModel) {
+fun RegisterScreen(navHostController: NavHostController) {
+
+    val authViewModel = hiltViewModel<AuthViewModel>()
     val authDataStore = authViewModel.authDataState.collectAsStateWithLifecycle().value
     val emailTextField = authDataStore.emailField
     val passwordTextField = authDataStore.passwordField

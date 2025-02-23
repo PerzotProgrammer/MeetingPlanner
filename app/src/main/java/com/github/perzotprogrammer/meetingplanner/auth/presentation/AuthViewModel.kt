@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.github.perzotprogrammer.meetingplanner.auth.presentation.model.AuthDataState
 import com.github.perzotprogrammer.meetingplanner.core.presentation.model.DataResult
 import com.github.perzotprogrammer.meetingplanner.core.repository.FirebaseAuthRepository
+import com.github.perzotprogrammer.meetingplanner.core.repository.FirebaseDataStorageRepository
 import com.github.perzotprogrammer.meetingplanner.core.repository.model.FirebaseCallResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,23 +14,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: FirebaseAuthRepository
+    private val authRepository: FirebaseAuthRepository,
+    private val dataStorageRepository: FirebaseDataStorageRepository
 ) : ViewModel() {
 
-    private val _authDataStateFlow = MutableStateFlow(AuthDataState())
+    private val _authDataStateFlow = MutableStateFlow(AuthDataState)
     val authDataState: StateFlow<AuthDataState> = _authDataStateFlow
     private val _authDataState = _authDataStateFlow.value
-
-
-    fun isUserSignIn(): Boolean {
-        if (authRepository.isUserLoggedIn()) {
-            Log.d("AUTH", "User is already logged in")
-            return true
-        } else {
-            Log.d("AUTH", "User is not logged in")
-            return false
-        }
-    }
 
     suspend fun createUserWithEmailAndPassword(
         email: String,
@@ -45,7 +36,10 @@ class AuthViewModel @Inject constructor(
         }
         return when (authRepository.createUserWithEmailAndPassword(email, password)) {
             is FirebaseCallResult.Error -> DataResult.Error
-            is FirebaseCallResult.Success -> DataResult.Success
+            is FirebaseCallResult.Success -> {
+                dataStorageRepository.writeCurrentUser()
+                DataResult.Success
+            }
         }
     }
 
@@ -58,7 +52,10 @@ class AuthViewModel @Inject constructor(
         }
         return when (authRepository.signInWithEmailAndPassword(email, password)) {
             is FirebaseCallResult.Error -> DataResult.Error
-            is FirebaseCallResult.Success -> DataResult.Success
+            is FirebaseCallResult.Success -> {
+                dataStorageRepository.writeCurrentUser()
+                DataResult.Success
+            }
         }
     }
 }
